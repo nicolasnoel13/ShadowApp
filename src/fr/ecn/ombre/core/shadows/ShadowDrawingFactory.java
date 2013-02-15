@@ -39,8 +39,10 @@ public class ShadowDrawingFactory {
 		int Jour = time.get(Calendar.DAY_OF_MONTH);
 		int Mois = time.get(Calendar.MONTH) + 1;
 		int Heure = time.get(Calendar.HOUR_OF_DAY);
+		int Minute = time.get(Calendar.MINUTE);
 		Temps date = new Temps(Jour, Mois);
-		date.setHeure(Heure);
+		//Now the date is more precise thanks to the addition of the minutes
+		date.setHeure((double)Heure + Minute/60.0);
 		
 		// =============================================================//
 		// CONVERSION date--> position soleil

@@ -2,7 +2,7 @@ package com.ei3info.gsun;
 public class Temps {
 	public int jour;
 	public int mois;
-	public int heure;
+	public double heure;
 	
 	public Temps(int jour, int mois) {
 		super();
@@ -27,11 +27,11 @@ public class Temps {
 		this.mois = mois;
 	}
 
-	public int getHeure() {
+	public double getHeure() {
 		return heure;
 	}
 
-	public void setHeure(int heure) {
+	public void setHeure(double heure) {
 		this.heure = heure;
 	}
 	

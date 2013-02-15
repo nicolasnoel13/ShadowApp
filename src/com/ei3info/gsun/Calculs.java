@@ -49,7 +49,7 @@ public class Calculs {
 	// Returns the Solar time, necessary to compute the Azimuth and the Height
 	public double tempsSolaireVrai(){
 		//temps solaire moyen
-		double TSM = (double)(date.getHeure() + position.getLongitude()/15);
+		double TSM = date.getHeure() + position.getLongitude()/15;
 		//temps solaire vrai
 		double TSV = TSM - this.EquationTemps() - this.fuseau() - majorationHoraire();
 		

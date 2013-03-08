@@ -1,7 +1,6 @@
 package fr.ecn.ombre.android;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,29 +12,27 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import fr.ecn.common.core.imageinfos.ImageInfos;
 
 /**
- * An activity to select faces with the user giving the 4 corners of the face
+ * An activity to select faces
  * 
  * @author jerome
  *
  */
 public class FacesSimpleActivity extends Activity implements OnTouchListener {
 
-	private static final int MENU_ADD_FACE = Menu.FIRST;
-	private static final int MENU_EDIT_LAST_FACE = Menu.FIRST + 5;
-	private static final int MENU_REMOVE_LAST_FACE = Menu.FIRST + 1;
-	private static final int MENU_VALIDATE = Menu.FIRST + 2;
+//	private static final int MENU_ADD_FACE = Menu.FIRST;
+	private static final int MENU_EDIT_LAST_FACE = Menu.FIRST + 4;
+	private static final int MENU_REMOVE_LAST_FACE = Menu.FIRST;
+	private static final int MENU_VALIDATE = Menu.FIRST + 1;
 	
-	private static final int MENU_END_FACE = Menu.FIRST + 3;
-	private static final int MENU_CANCEL_FACE = Menu.FIRST + 4;
+	private static final int MENU_END_FACE = Menu.FIRST + 2;
+	private static final int MENU_CANCEL_FACE = Menu.FIRST + 3;
 	
-	private static final int DIALOG_SELECT_FACE_TYPE = 0;
+//	private static final int DIALOG_SELECT_FACE_TYPE = 0;
 
 	protected ImageInfos imageInfos;
 
@@ -56,6 +53,7 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 		
 		if (this.controller == null) {
 			this.controller = new FacesSimpleController(imageInfos);
+			this.controller.startFace(true, true);
 		}
 
 		this.setUp();
@@ -87,9 +85,9 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 	}
 
 	public boolean onTouch(View v, MotionEvent event) {
-		if (this.controller.isIdle()) {
-			return false;
-		}
+//		if (this.controller.isIdle()) {
+//			return false;
+//		}
 
 		if (this.matrix == null) {
 			this.matrix = new Matrix();
@@ -123,7 +121,7 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 
 		return true;
 	}
-
+/*
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 		
@@ -149,14 +147,41 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 
 		return super.onPrepareOptionsMenu(menu);
 	}
+*/
+	//New method onPrepareOptionsMenu to limit simplify the method and to add the possibility to create
+	//faces with more than 4 points
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.clear();
+		
+		switch (this.controller.getMode()) {
+		case FacesSimpleController.MODE_CREATE:
+			boolean hasFaces = this.controller.getFaces().size() > 0;
 
+			menu.add(0, MENU_EDIT_LAST_FACE, 0, R.string.edit_last_face).setEnabled(hasFaces && this.controller.getCurrentFace().getPoints().size()==0);
+			menu.add(0, MENU_REMOVE_LAST_FACE, 0, R.string.remove_last_face).setEnabled(hasFaces && this.controller.getCurrentFace().getPoints().size()==0);
+			if (hasFaces && this.controller.getCurrentFace().getPoints().size()==0) {
+				menu.add(0, MENU_VALIDATE, 0, R.string.menu_validate).setEnabled(true);
+			} else {
+				menu.add(0, MENU_VALIDATE, 0, R.string.menu_validate).setEnabled(false);
+			}
+			menu.add(0, MENU_CANCEL_FACE, 0, R.string.cancel_face).setEnabled(this.controller.getCurrentFace().getPoints().size()!=0);
+			break;
+		case FacesSimpleController.MODE_EDIT:
+			menu.add(0, MENU_END_FACE, 0, R.string.end_face);
+			break;
+		}
+
+		return super.onPrepareOptionsMenu(menu);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_ADD_FACE:
-			this.showDialog(DIALOG_SELECT_FACE_TYPE);
-			
-			return true;
+		//Useless Now
+//		case MENU_ADD_FACE:
+//			this.showDialog(DIALOG_SELECT_FACE_TYPE);
+//			
+//			return true;
 		case MENU_EDIT_LAST_FACE:
 			this.controller.editLastFace();
 
@@ -198,6 +223,7 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreateDialog(int)
 	 */
+/*
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch(id) {
@@ -224,5 +250,6 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 		
 		return super.onCreateDialog(id);
 	}
+*/
 
 }

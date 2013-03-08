@@ -16,6 +16,7 @@ import android.widget.Spinner;
 
 import fr.ecn.common.core.imageinfos.Coordinate;
 import fr.ecn.common.core.imageinfos.ImageInfos;
+import fr.ecn.common.core.imageinfos.TemporaryImageInfos;
 import fr.ecn.ombre.android.utils.ImageInfosDb;
 import fr.ecn.ombre.android.utils.ValidationException;
 
@@ -53,10 +54,11 @@ public class ImageInfosActivity extends Activity {
 		Bundle extras = getIntent().getExtras();
 		final ImageInfos imageInfos = (ImageInfos) extras.getSerializable("ImageInfos");
 		
-	    if (imageInfos != null) {
-			ImageInfosDb imageInfosDb = new ImageInfosDb(ImageInfosActivity.this);
-			imageInfosDb.loadInfos(imageInfos);
-			
+		if (imageInfos != null) {
+			if (extras.getBoolean("LoadedImage")) {
+				ImageInfosDb imageInfosDb = new ImageInfosDb(ImageInfosActivity.this);
+				imageInfosDb.loadInfos(imageInfos);
+			}
 			if (imageInfos.getLatitude() != null) {
 				editLat.setText(imageInfos.getLatitude().getDMSString());
 				latitudeRefSpinner.setSelection(latitudeAdapter.getPosition(imageInfos.getLatitude().getRef()));
@@ -69,7 +71,12 @@ public class ImageInfosActivity extends Activity {
 	    	
 	    	if (imageInfos.getOrientation() != null) {
 	    		editOrient.setText(imageInfos.getOrientation().toString());
-	    	}
+	    	} else {
+	    		//We use the TemporaryImageInfos if it exists and if we don't have any other values
+				if (TemporaryImageInfos.getExistence()) {
+					editOrient.setText(TemporaryImageInfos.getOrientation().toString());
+				}
+			}
 	    }
 	    
 		okButton.setOnClickListener(new OnClickListener() {
@@ -83,6 +90,10 @@ public class ImageInfosActivity extends Activity {
 					ImageInfosDb imageInfosDb = new ImageInfosDb(ImageInfosActivity.this);
 					imageInfosDb.saveInfos(imageInfos);
 					
+					// We create the TemporaryImageInfos if it has not been created before
+					if (!TemporaryImageInfos.getExistence()) {
+						TemporaryImageInfos.setAllInfos(imageInfos);
+					}
 					Intent i = new Intent(ImageInfosActivity.this, HorizonChoiceActivity.class);
 					i.putExtra("ImageInfos", imageInfos);
 					startActivity(i);

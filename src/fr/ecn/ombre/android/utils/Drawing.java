@@ -24,23 +24,29 @@ public class Drawing {
 	 * @param partial if the face is partial, a partial face doesn't have the first and last point linked
 	 */
 	public static void drawFace(Face face, Canvas canvas, Paint paint, boolean partial) {
-		Point[] points = face.getPoints().toArray(new Point[0]);
-		
-		Path path = new Path();
-		
-		path.moveTo((float) points[0].getX(), (float) points[0].getY());
+		if (face.getPoints().size()!=0) {
 
-		for (int i = 1; i < points.length; i++) {
-			Point p = points[i];
-			
-			path.lineTo((float) p.getX(), (float) p.getY());
+			Point[] points = face.getPoints().toArray(new Point[0]);
+
+			Path path = new Path();
+
+			path.moveTo((float) points[0].getX(), (float) points[0].getY());
+
+			// We draw a circle around the first point to show it has been taken into account
+			if (points.length==1){
+				canvas.drawCircle((float)points[0].getX(), (float)points[0].getY(), 2, paint);
+			}
+			else {
+				for (int i = 1; i < points.length; i++) {
+					Point p = points[i];
+
+					path.lineTo((float) p.getX(), (float) p.getY());
+				}
+					path.lineTo((float) points[0].getX(), (float) points[0].getY());
+			}
+
+			canvas.drawPath(path, paint);
 		}
-		
-		if (!partial) {
-			path.lineTo((float) points[0].getX(), (float) points[0].getY());
-		}
-		
-		canvas.drawPath(path, paint);
 	}
 
 	public static void drawFace(Face face, Canvas canvas, Paint paint) {

@@ -12,6 +12,7 @@ import com.drew.metadata.exif.GpsDirectory;
 
 import fr.ecn.common.core.imageinfos.Coordinate;
 import fr.ecn.common.core.imageinfos.ImageInfos;
+import fr.ecn.common.core.imageinfos.TemporaryImageInfos;
 
 /**
  * Helper class for reading Exif data from a JPEG file
@@ -156,15 +157,21 @@ public class ExifReader {
 			try {
 				image.setLatitude(Coordinate.fromString(reader.getLatitudeDescription(), reader.getLatitudeRef()));
 			} catch (ExifReaderException e) {
-				// Latitude can't be read
+				// Latitude can't be read thus we use the TemporaryImageInfos if it exists
 				e.printStackTrace();
+				if (TemporaryImageInfos.getExistence()){
+					image.setLatitude(TemporaryImageInfos.getLatitude());	
+				}
 			}
 			
 			try {
 				image.setLongitude(Coordinate.fromString(reader.getLongitudeDescription(), reader.getLongitudeRef()));
 			} catch (ExifReaderException e) {
-				// Logitude can't be read
+				// Logitude can't be read thus we use the TemporaryImageInfos if it exists
 				e.printStackTrace();
+				if (TemporaryImageInfos.getExistence()){
+					image.setLongitude(TemporaryImageInfos.getLongitude());	
+				}
 			}
 		} catch (JpegProcessingException e) {
 			//Exif can't be read so just log the exception

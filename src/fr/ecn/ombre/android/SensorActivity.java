@@ -19,6 +19,7 @@ import android.widget.Button;
 
 import fr.ecn.common.core.imageinfos.Coordinate;
 import fr.ecn.common.core.imageinfos.ImageInfos;
+import fr.ecn.common.core.imageinfos.TemporaryImageInfos;
 
 /**
  * Activity that request informations from the sensors (GPS Coordinates and
@@ -54,7 +55,7 @@ public class SensorActivity extends Activity implements LocationListener, Sensor
 		skip.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View view) {
-				startNextActivity();
+				startNextActivityWithoutAllInfos();
 			}
 			
 		});
@@ -64,11 +65,20 @@ public class SensorActivity extends Activity implements LocationListener, Sensor
 	
 	protected void checkInformations() {
 		if (this.hasLocation && this.hasAzimuth) {
-			this.startNextActivity();
+			this.startNextActivityWithAllInfos();
 		}
 	}
 	
-	protected void startNextActivity() {
+	protected void startNextActivityWithAllInfos() {
+		// We set the TemporaryImageInfos for future images since we have all the informations about orientation and location
+		TemporaryImageInfos.setAllInfos(this.imageInfos);
+		
+		Intent i = new Intent(this, ImageInfosActivity.class);
+		i.putExtra("ImageInfos", this.imageInfos);
+		this.startActivity(i);
+	}
+	
+	protected void startNextActivityWithoutAllInfos() {
 		//Remove Listeners if not already removed
 		if (!this.hasLocation) {
 			LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -79,7 +89,17 @@ public class SensorActivity extends Activity implements LocationListener, Sensor
 			SensorManager sm = (SensorManager) this.getSystemService(SENSOR_SERVICE);
 			sm.unregisterListener(this);
 		}
-		
+		if (TemporaryImageInfos.getExistence()) {
+			//We do not reuse previous temporary informations if we have more recent ones
+			if (!this.hasLocation) {
+				this.imageInfos.setLatitude(TemporaryImageInfos.getLatitude());
+				this.imageInfos.setLongitude(TemporaryImageInfos.getLongitude());
+			}
+			
+			if (!this.hasAzimuth) {
+				this.imageInfos.setOrientation(TemporaryImageInfos.getOrientation());
+			}
+		}
 		Intent i = new Intent(this, ImageInfosActivity.class);
 		i.putExtra("ImageInfos", this.imageInfos);
 		this.startActivity(i);

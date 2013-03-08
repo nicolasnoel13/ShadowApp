@@ -65,6 +65,7 @@ public class OmbreActivity extends Activity {
 				
 				Intent i = new Intent(this, ImageInfosActivity.class);
 				i.putExtra("ImageInfos", imageInfos);
+				i.putExtra("LoadedImage", true);
 				this.startActivity(i);
 			}
 			break;

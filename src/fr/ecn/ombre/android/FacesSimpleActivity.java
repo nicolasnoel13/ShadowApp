@@ -24,7 +24,6 @@ import fr.ecn.common.core.imageinfos.ImageInfos;
  */
 public class FacesSimpleActivity extends Activity implements OnTouchListener {
 
-//	private static final int MENU_ADD_FACE = Menu.FIRST;
 	private static final int MENU_EDIT_LAST_FACE = Menu.FIRST + 4;
 	private static final int MENU_REMOVE_LAST_FACE = Menu.FIRST;
 	private static final int MENU_VALIDATE = Menu.FIRST + 1;
@@ -32,8 +31,6 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 	private static final int MENU_END_FACE = Menu.FIRST + 2;
 	private static final int MENU_CANCEL_FACE = Menu.FIRST + 3;
 	
-//	private static final int DIALOG_SELECT_FACE_TYPE = 0;
-
 	protected ImageInfos imageInfos;
 
 	protected FacesSimpleController controller;
@@ -53,7 +50,7 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 		
 		if (this.controller == null) {
 			this.controller = new FacesSimpleController(imageInfos);
-			this.controller.startFace(true, true);
+			this.controller.startFace();
 		}
 
 		this.setUp();
@@ -85,9 +82,6 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 	}
 
 	public boolean onTouch(View v, MotionEvent event) {
-//		if (this.controller.isIdle()) {
-//			return false;
-//		}
 
 		if (this.matrix == null) {
 			this.matrix = new Matrix();
@@ -121,33 +115,7 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 
 		return true;
 	}
-/*
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		
-		switch (this.controller.getMode()) {
-		case FacesSimpleController.MODE_IDLE:
-			// If the controller has at least one face stored
-			boolean hasFaces = this.controller.getFaces().size() > 0;
 
-			menu.add(0, MENU_ADD_FACE, 0, R.string.menu_addface);
-			menu.add(0, MENU_EDIT_LAST_FACE, 0, R.string.edit_last_face).setEnabled(hasFaces);
-			menu.add(0, MENU_REMOVE_LAST_FACE, 0, R.string.remove_last_face).setEnabled(hasFaces);
-			menu.add(0, MENU_VALIDATE, 0, R.string.menu_validate).setEnabled(hasFaces);
-			break;
-		case FacesSimpleController.MODE_CREATE:
-			menu.add(0, MENU_END_FACE, 0, R.string.end_face).setEnabled(false);
-			menu.add(0, MENU_CANCEL_FACE, 0, R.string.cancel_face);
-			break;
-		case FacesSimpleController.MODE_EDIT:
-			menu.add(0, MENU_END_FACE, 0, R.string.end_face);
-			menu.add(0, MENU_CANCEL_FACE, 0, R.string.cancel_face).setEnabled(false);
-			break;
-		}
-
-		return super.onPrepareOptionsMenu(menu);
-	}
-*/
 	//New method onPrepareOptionsMenu to limit simplify the method and to add the possibility to create
 	//faces with more than 4 points
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -177,11 +145,6 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		//Useless Now
-//		case MENU_ADD_FACE:
-//			this.showDialog(DIALOG_SELECT_FACE_TYPE);
-//			
-//			return true;
 		case MENU_EDIT_LAST_FACE:
 			this.controller.editLastFace();
 
@@ -195,6 +158,8 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 			
 			return true;
 		case MENU_VALIDATE:
+			// we set the current face of the controller to null and we start the activity to draw the shadows
+			this.controller.endCreationMode();
 			this.imageInfos.setFaces(this.controller.getFaces());
 			
 			Intent i = new Intent(this, OptionsActivity.class);
@@ -219,37 +184,4 @@ public class FacesSimpleActivity extends Activity implements OnTouchListener {
 
 		return super.onOptionsItemSelected(item);
 	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onCreateDialog(int)
-	 */
-/*
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch(id) {
-		case DIALOG_SELECT_FACE_TYPE:
-			final Dialog dialog = new Dialog(this);
-
-			dialog.setContentView(R.layout.select_face_type);
-			dialog.setTitle("Sélectionnez le type de face");
-			
-			final CheckBox partial = (CheckBox) dialog.findViewById(R.id.partial);			
-			final CheckBox notReal = (CheckBox) dialog.findViewById(R.id.notReal);
-
-			final Button button = (Button) dialog.findViewById(R.id.ok);
-			button.setOnClickListener(new View.OnClickListener() {
-				
-				public void onClick(View arg0) {
-					controller.startFace(partial.isChecked(), notReal.isChecked());
-					dialog.dismiss();
-				}
-			});
-			
-			return dialog;
-		}
-		
-		return super.onCreateDialog(id);
-	}
-*/
-
 }

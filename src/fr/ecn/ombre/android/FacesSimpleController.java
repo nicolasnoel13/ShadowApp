@@ -25,7 +25,6 @@ public class FacesSimpleController {
 	
 	protected int mode = MODE_EDIT;
 	
-	//public static final int MODE_IDLE = 0;
 	public static final int MODE_EDIT = 1;
 	public static final int MODE_CREATE = 2;
 
@@ -39,13 +38,6 @@ public class FacesSimpleController {
 	public int getMode() {
 		return mode;
 	}
-
-	/**
-	 * @return true if the controller isn't in face creation or edition mode
-	 */
-//	public boolean isIdle() {
-//		return this.mode == MODE_IDLE;
-//	}
 	
 	/**
 	 * @return true if the controller is in face creation mode
@@ -64,9 +56,16 @@ public class FacesSimpleController {
 	/**
 	 * Start creation mode
 	 */
-	public void startFace(boolean partial, boolean notReal) {
+	public void startFace() {
 		this.mode = MODE_CREATE;
-		this.currentFace = new Face(partial, notReal);
+		this.currentFace = new Face(false);
+	}
+	
+	/**
+	 * End creation mode
+	 */
+	public void endCreationMode() {
+		this.currentFace = null;
 	}
 	
 	/**
@@ -82,7 +81,7 @@ public class FacesSimpleController {
 	 */
 	public void cancelFace() {
 		this.mode = MODE_CREATE;
-		this.currentFace = new Face(true, true);
+		this.currentFace = new Face(false);
 		this.currentPoint = null;
 	}
 	
@@ -90,13 +89,14 @@ public class FacesSimpleController {
 	 * End the current Face
 	 */
 	public void endFace() {
-		//If we are in creation mode, add the face to the list of faces
+		//If we are in creation mode, add the face to the list of faces and indicate that the face has been completed
 		if (this.isCreate()) {
+			this.currentFace.completed();
 			this.faces.add(this.currentFace);
 		}
 		
 		this.mode = MODE_CREATE;
-		this.currentFace = new Face(true, true);
+		this.currentFace = new Face(false);
 		this.currentPoint = null;
 	}
 
@@ -106,18 +106,12 @@ public class FacesSimpleController {
 	 * @param x
 	 * @param y
 	 */
-	public void addPoint(float x, float y) {		
-//		//Auto-end face if it as 4 points or 5 points if the face is a partial one
-//		if (this.currentFace.getPoints().size() == 4 && !this.currentFace.isPartial()
-//				|| this.currentFace.getPoints().size() == 5 && this.currentFace.isPartial()) {
-//			this.endFace();
-//		}
-		
+	public void addPoint(float x, float y) {
 		//With this, we can create faces with more than 4 points
-		//End the face if the point selected is the first one and if there is more than 3 points
+		//To end the face the selected point must be the first one only if there is more than 3 points
 		if (this.currentFace.getPoints().size() >= 3) {
 			Point p = this.currentFace.getPoints().get(0);
-			double delta = 10;
+			double delta = 25;
 			if (p.getX() < x + delta && p.getX() > x - delta && p.getY() < y + delta && p.getY() > y - delta) {
 				this.endFace();
 			} else {

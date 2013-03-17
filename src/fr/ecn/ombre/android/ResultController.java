@@ -64,7 +64,7 @@ public class ResultController implements Callable<Void> {
 		//Creating the list of ShadowDrawingFace
 		List<ShadowDrawingFace> faces = new LinkedList<ShadowDrawingFace>();
 		for (Face f : imageInfos.getFaces()) {
-			faces.add(new ShadowDrawingFace(f.getRealFace()));
+			faces.add(new ShadowDrawingFace(f));
 		}
 
 		Image image = BitmapConvertor.bitmapToImage(this.bitmap);

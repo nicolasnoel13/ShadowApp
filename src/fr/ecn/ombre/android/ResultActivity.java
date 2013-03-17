@@ -6,8 +6,11 @@ import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import fr.ecn.common.android.DialogHelper;
 import fr.ecn.common.core.imageinfos.ImageInfos;
@@ -153,10 +157,10 @@ public class ResultActivity extends Activity {
 						});
 					} else {
 						Log.w("Ombre", e);
-						
 						runOnUiThread(new Runnable() {
 							public void run() {
-								DialogHelper.errorDialog(ResultActivity.this, "Une erreur c'est produite lors du calcul du rÃ©sultat");
+
+								DialogHelper.errorDialog(ResultActivity.this, "Une erreur s'est produite lors du calcul du résultat");
 							}
 						});
 					}

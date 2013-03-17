@@ -69,7 +69,7 @@ public class Coordinate implements Serializable {
 	 * @return
 	 */
 	public String getDMSString() {
-		return (int)this.degrees + "Â°" + (int)this.minutes + "'" + this.seconds + "\"";
+		return (int)this.degrees + "°" + (int)this.minutes + "'" + this.seconds + "\"";
 	}
 	
 	/* (non-Javadoc)
@@ -88,7 +88,7 @@ public class Coordinate implements Serializable {
 	 * @return the Coordinate object represented by this string
 	 */
 	public static Coordinate fromString(String coordinate, String reference) {
-		String[] coordinateParts = coordinate.split("[Â°'\"]");
+		String[] coordinateParts = coordinate.split("[°'\"]");
 		
 		int length = coordinateParts.length;
 		
@@ -115,7 +115,7 @@ public class Coordinate implements Serializable {
 	 * @return the Coordinate object represented by this string
 	 */
 	public static Coordinate fromString(String coordinate) {
-		String[] coordinateParts = coordinate.split("[Â°'\"]");
+		String[] coordinateParts = coordinate.split("[°'\"]");
 		
 		int length = coordinateParts.length;
 		String reference;
